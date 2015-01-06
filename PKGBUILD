@@ -1,6 +1,6 @@
 # Maintainer: Jon Gjengset <jon@tsp.io>
 pkgname=songtext-git
-pkgver=r1.1ab7e4b
+pkgver=r4.24dd331
 pkgrel=1
 pkgdesc="bash script for retrieving song lyrics."
 arch=('any')
@@ -19,5 +19,5 @@ pkgver() {
 
 package() {
 	cd "$srcdir/${pkgname%-git}"
-	install -Dm755 "songtext" "/usr/bin/songtext"
+	install -Dm755 "songtext" "$pkgdir/usr/bin/songtext"
 }
