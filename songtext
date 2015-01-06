@@ -1,0 +1,47 @@
+#!/bin/bash
+
+x() {
+	c=""
+	while read -r line; do
+		c="$c $line"
+	done
+	echo "$c" \
+		| pup "text{}" \
+		| sed 's/^[· [:space:]]*//' \
+		| sed 's/[· [:space:]]*$//' \
+		| sed 's/ lyrics$//'
+}
+
+matches=$(curl -s "http://www.lyricsfreak.com/search.php?a=search&type=song&q=$*" \
+	| pup ".maincont form + div table:first-child tbody tr")
+curr=""
+hrefs=()
+i=0
+while read -r line; do
+	echo $line | grep "</tr>" > /dev/null
+	if [[ $? -eq 1 ]]; then
+		curr="$curr $line"
+	else
+		curr="$curr </tr>"
+		curr="<table>$curr</table>"
+		artist=$(echo "$curr" | pup "td:nth-child(1) a")
+		song=$(echo "$curr" | pup "td:nth-child(2) a")
+		((n=i+1))
+		printf "%02d. %s - %s\n" $n "$(echo "$artist" | x)" "$(echo "$song" | x)" > /dev/stderr
+		hrefs[$i]=$(echo "$song" | pup "a attr{href}" | sed 's@^@http://www.lyricsfreak.com@')
+		((i=n))
+		curr=""
+	fi
+done < <(echo "$matches")
+
+echo -n "Choose song (1-$i): " > /dev/stderr
+read c
+((c=c-1))
+url="${hrefs[$c]}"
+
+if [[ -z "$url" ]]; then
+	echo "Invalid song choice; exiting." > /dev/stderr
+	exit 1
+fi
+
+curl -s "$url" | pup "#content_h text{}" | sed 's/<br>/\n/'
