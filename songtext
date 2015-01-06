@@ -44,4 +44,9 @@ if [[ -z "$url" ]]; then
 	exit 1
 fi
 
-curl -s "$url" | pup "#content_h text{}" | sed 's/<br>/\n/'
+lyrics=$(curl -s "$url" | pup "#content_h text{}" | sed 's/<br>/\n/')
+if [ -t 1 ] ; then
+	echo "$lyrics" | less
+else
+	echo "$lyrics"
+fi

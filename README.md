@@ -1,10 +1,10 @@
-This script will fetch song lyrics and print them to STDOUT.
-All user prompts are sent to STDERR, so using `>` or `tee` to store the lyrics
-should work correctly.
+This script will fetch song lyrics and print them to STDOUT or using `less` is
+STDOUT is a terminal. All user prompts are sent to STDERR, so using `>` or
+`tee` to store the lyrics should work correctly.
 
 Usage is straightforward:
 ```shell
-$ ./songtext let it be
+$ ./songtext let it be > letitbe.txt
 01. Beatles - Let It Be
 02. Vazquez Sounds - Let It Be
 03. Glee - Let It Be
@@ -34,6 +34,7 @@ $ ./songtext let it be
 27. Gold Mind Squad - Let It Be
 28. Judy Collins - Let It Be
 Choose song (1-28): 1
+$ cat letitbe.txt
 When I find myself in times of trouble, Mother Mary comes to me
 Speaking words of wisdom, let it be
 And in my hour of darkness she is standing right in front of me
