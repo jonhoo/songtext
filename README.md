@@ -2,6 +2,8 @@ This script will fetch song lyrics and print them to STDOUT or using `less` is
 STDOUT is a terminal. All user prompts are sent to STDERR, so using `>` or
 `tee` to store the lyrics should work correctly.
 
+Depends on [pup](https://github.com/EricChiang/pup) being installed.
+
 Usage is straightforward:
 ```shell
 $ ./songtext let it be > letitbe.txt
