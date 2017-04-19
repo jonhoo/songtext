@@ -6,14 +6,14 @@ x() {
 		c="$c $line"
 	done
 	echo "$c" \
-		| pup "text{}" \
+		| pup --charset UTF-8 "text{}" \
 		| sed 's/^[· [:space:]]*//' \
 		| sed 's/[· [:space:]]*$//' \
 		| sed 's/ lyrics$//'
 }
 
 matches=$(curl -s "http://www.lyricsfreak.com/search.php?a=search&type=song&q=$*" \
-	| pup ".maincont form + div table:first-child tbody tr")
+	| pup -p --charset UTF-8 ".maincont form + div table:first-child tbody tr")
 curr=""
 hrefs=()
 i=0
@@ -24,11 +24,11 @@ while read -r line; do
 	else
 		curr="$curr </tr>"
 		curr="<table>$curr</table>"
-		artist=$(echo "$curr" | pup "td:nth-child(1) a")
-		song=$(echo "$curr" | pup "td:nth-child(2) a")
+		artist=$(echo "$curr" | pup -p --charset UTF-8 "td:nth-child(1) a")
+		song=$(echo "$curr" | pup -p --charset UTF-8 "td:nth-child(2) a")
 		((n=i+1))
 		printf "%02d. %s - %s\n" $n "$(echo "$artist" | x)" "$(echo "$song" | x)" > /dev/stderr
-		hrefs[$i]=$(echo "$song" | pup "a attr{href}" | sed 's@^@http://www.lyricsfreak.com@')
+		hrefs[$i]=$(echo "$song" | pup -p --charset UTF-8 "a attr{href}" | sed 's@^@http://www.lyricsfreak.com@')
 		((i=n))
 		curr=""
 	fi
@@ -44,7 +44,7 @@ if [[ -z "$url" ]]; then
 	exit 1
 fi
 
-lyrics=$(curl -s "$url" | pup "#content_h text{}" | sed 's/<br>/\n/')
+lyrics=$(curl -s "$url" | pup -p --charset UTF-8 "#content_h text{}" | sed 's/<br>/\n/')
 if [ -t 1 ] ; then
 	echo "$lyrics" | less
 else
